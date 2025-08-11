@@ -1,6 +1,3 @@
-let ServoA = 0
-let MotorA = 0
-let ServoB = 0
 bluetooth.onBluetoothConnected(function () {
     basic.showIcon(IconNames.Yes)
 })
@@ -12,6 +9,30 @@ input.onButtonPressed(Button.A, function () {
         ServoA = 0
     } else {
         ServoA = 1
+    }
+})
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+    receivedString = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))
+    if (receivedString == "up") {
+        ServoA = 0
+    }
+    if (receivedString == "down") {
+        ServoA = 1
+    }
+    if (receivedString == "right") {
+        ServoB = 0
+    }
+    if (receivedString == "left") {
+        ServoB = 1
+    }
+    if (receivedString == "stop") {
+        MotorA = 0
+    }
+    if (receivedString.charAt(0) == "x") {
+        basic.showString(receivedString)
+    }
+    if (receivedString.charAt(0) == "c") {
+        basic.showString(receivedString)
     }
 })
 input.onButtonPressed(Button.AB, function () {
@@ -28,6 +49,12 @@ input.onButtonPressed(Button.B, function () {
         ServoB = 1
     }
 })
+let MotorA = 0
+let ServoB = 0
+let receivedString = ""
+let ServoA = 0
+bluetooth.startUartService()
+basic.showIcon(IconNames.Sad)
 basic.forever(function () {
     if (ServoA) {
         pins.servoWritePin(AnalogPin.P0, 180)
