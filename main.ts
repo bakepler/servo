@@ -25,14 +25,16 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
     if (receivedString == "left") {
         ServoB = 1
     }
-    if (receivedString == "stop") {
-        MotorA = 0
+    if (receivedString == "horn") {
+        basic.showString("H")
     }
     if (receivedString.charAt(0) == "x") {
-        basic.showString(receivedString)
+        ServoA = parseFloat(receivedString.substr(1, 3))
+        bluetooth.uartWriteString(receivedString.substr(1, 3))
     }
     if (receivedString.charAt(0) == "c") {
-        basic.showString(receivedString)
+        ServoB = parseFloat(receivedString.substr(1, 3))
+        bluetooth.uartWriteString(receivedString.substr(1, 3))
     }
 })
 input.onButtonPressed(Button.AB, function () {
@@ -63,10 +65,8 @@ basic.forever(function () {
     }
     if (ServoB) {
         pins.servoWritePin(AnalogPin.P1, 180)
-        basic.showString("" + (ServoB))
     } else {
         pins.servoWritePin(AnalogPin.P1, 0)
-        basic.showString("" + (ServoB))
     }
     if (MotorA) {
         pins.digitalWritePin(DigitalPin.P13, 1)
